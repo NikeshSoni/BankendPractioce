@@ -1,28 +1,33 @@
 const asyncHandler = require("express-async-handler");
+const Contact = require("../models/contactModel")
 
 //  description : => Get all Contacts 
 //  @route  Get api/contacts
 // @access publick
 
-const getContacts = asyncHandler( async (req, res) => {
+const getContacts = asyncHandler(async (req, res) => {
     // res.send("get All contacts");
     // res.json({massage:"get All contacts"});
-    res.status(200).json({ massage: "get All contacts" });
-} )
+    const contactData = await Contact.find();
+    res.status(200).json(contactData);
+})
 
 //  @dec  Create New  Contacts 
 //  @route  post api/contacts
 // @access publick
 
 const createContact = async (req, res) => {
-    console.log("the req body is + " , req.body);
-     const {name , email , phone} = req.body;
+    console.log("the req body is + ", req.body);
+    const { name, email, phone } = req.body;
 
-     if (!name || !email || !phone) {
+    if (!name || !email || !phone) {
         res.status(400);
         throw new Error("All fields are mandatory !")
+    }
+
+    const contactData = await Contact.create({
         
-     }
+    });
 
     res.status(201).json({ massage: "create contacts" });
 }
@@ -55,6 +60,6 @@ module.exports = {
     getContacts,
     createContact,
     getContact,
-    updateContact, 
+    updateContact,
     deleteContact
 };
