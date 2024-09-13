@@ -26,10 +26,12 @@ const createContact = async (req, res) => {
     }
 
     const contactData = await Contact.create({
-        
+        name,
+        email,
+        phone
     });
 
-    res.status(201).json({ massage: "create contacts" });
+    res.status(201).json(contactData);
 }
 
 //  @dec  get New  Contacts 
@@ -37,7 +39,16 @@ const createContact = async (req, res) => {
 // @access publick
 
 const getContact = async (req, res) => {
-    res.status(200).json({ massage: `Update Contacts for ${req.params.id}` });
+
+    const contact = await Contact.findById(req.params.id)
+
+    if (!contact) {
+        res.status(404);
+        throw new Error("Contact Not Found");
+    }
+
+    // res.status(200).json({ massage: `Update Contacts for ${req.params.id}`});
+    res.status(200).json(contact);
 }
 
 //  @dec  Update  Contacts 
@@ -45,7 +56,21 @@ const getContact = async (req, res) => {
 // @access publick
 
 const updateContact = async (req, res) => {
-    res.status(200).json({ massage: `Update Contacts for ${req.params.id}` });
+
+    const contact = await Contact.findById(req.params.id)
+
+    if (!contact) {
+        res.status(404);
+        throw new Error("Contact Not Found");
+    }
+
+    const updatedContact = await Contact.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        { new: true }
+    )
+    res.status(200).json(updatedContact);
+    // res.status(200).json({ massage: `Update Contacts for ${req.params.id}` });
 }
 
 //  @dec  delete  Contacts 
@@ -53,7 +78,17 @@ const updateContact = async (req, res) => {
 // @access publick
 
 const deleteContact = async (req, res) => {
-    res.status(200).json({ massage: `Delete Contacts for ${req.params.id}` });
+
+    const contact = await Contact.findById(req.params.id)
+
+    if (!contact) {
+        res.status(404);
+        throw new Error("Contact Not Found");
+    }
+    // await Contact.remove();
+    await Contact.findByIdAndDelete(req.params.id);
+    res.status(200).json({ message: `Contact deleted successfully for ID: ${req.params.id}` });
+    // res.status(200).json({ massage: `Delete Contacts for ${req.params.id}` });
 }
 
 module.exports = {
